@@ -2,21 +2,18 @@
 AICA Batch Tracker Bot  —  AI-Powered Edition
 ==============================================
 Monitors https://ai.icai.org/aica.php for new AICA Level-1 batches.
-All plain-text questions are answered by Claude AI using live batch data.
 
 Requirements:
     pip install -r requirements.txt
 
 Environment variables needed:
     TELEGRAM_BOT_TOKEN   — from @BotFather on Telegram
-    ANTHROPIC_API_KEY    — your Anthropic API key
 """
 
 import os
 import json
 import logging
 import httpx
-import anthropic
 from datetime import datetime
 from telegram import Update
 from telegram.ext import (
@@ -42,13 +39,10 @@ logger = logging.getLogger(__name__)
 # Config
 # ─────────────────────────────────────────────
 BOT_TOKEN         = os.environ.get("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "YOUR_ANTHROPIC_KEY_HERE")
 CHECK_INTERVAL_MINUTES = 30
 SUBSCRIBERS_FILE   = "subscribers.json"
 KNOWN_BATCHES_FILE = "known_batches.json"
 
-# Anthropic client
-ai_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # ─────────────────────────────────────────────
 # Persistence helpers

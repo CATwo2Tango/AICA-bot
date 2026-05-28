@@ -9,14 +9,12 @@ Requirements:
 
 Environment variables needed:
     TELEGRAM_BOT_TOKEN   — from @BotFather on Telegram
-    ANTHROPIC_API_KEY    — from console.anthropic.com
 """
 
 import os
 import json
 import logging
 import httpx
-import anthropic
 from datetime import datetime
 from telegram import Update
 from telegram.ext import (
@@ -42,13 +40,10 @@ logger = logging.getLogger(__name__)
 # Config
 # ─────────────────────────────────────────────
 BOT_TOKEN         = os.environ.get("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "YOUR_ANTHROPIC_KEY_HERE")
 CHECK_INTERVAL_MINUTES = 30
 SUBSCRIBERS_FILE   = "subscribers.json"
 KNOWN_BATCHES_FILE = "known_batches.json"
 
-# Anthropic client
-ai_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # ─────────────────────────────────────────────
 # Persistence helpers

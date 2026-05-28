@@ -9,14 +9,12 @@ Requirements:
 
 Environment variables needed:
     TELEGRAM_BOT_TOKEN   — from @BotFather on Telegram
-    ANTHROPIC_API_KEY    — your Anthropic API key
 """
 
 import os
 import json
 import logging
 import httpx
-import anthropic
 from datetime import datetime
 from telegram import Update
 from telegram.ext import (
@@ -42,14 +40,9 @@ logger = logging.getLogger(__name__)
 # Config
 # ─────────────────────────────────────────────
 BOT_TOKEN         = os.environ.get("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "YOUR_ANTHROPIC_KEY_HERE")
 CHECK_INTERVAL_MINUTES = 30
 SUBSCRIBERS_FILE   = "subscribers.json"
 KNOWN_BATCHES_FILE = "known_batches.json"
-
-# Anthropic client
-ai_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-
 # ─────────────────────────────────────────────
 # Persistence helpers
 # ─────────────────────────────────────────────
@@ -69,7 +62,7 @@ def save_json(filepath: str, data):
 # ─────────────────────────────────────────────
 
 def format_batch(b: dict) -> str:
-    reg_icon = "🟢 OPEN" if b["registration_open"] else "🔴 CLOSED"
+    reg_icon = "🔴 CLOSED" if b["registration_closed"] else "🟢 OPEN"
     seats = b.get("available_seats")
     total = b.get("batch_limit")
     seat_str = f"🪑 Seats: {seats} / {total} available" if seats is not None else "🪑 Seats: (use /seats for count)"
@@ -104,7 +97,7 @@ def batches_to_text_summary(batches: list) -> str:
     """Convert batch list to a compact text for the AI system prompt."""
     lines = []
     for b in batches:
-        reg = "OPEN" if b["registration_open"] else "CLOSED"
+        reg = "CLOSED" if b["registration_closed"] else "OPEN"
         seats = b.get("available_seats")
         seat_info = f", Seats available: {seats}" if seats is not None else ""
         lines.append(
